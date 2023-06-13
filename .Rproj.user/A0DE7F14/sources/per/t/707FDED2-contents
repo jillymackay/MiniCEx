@@ -1,0 +1,158 @@
+library(shiny)
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(janitor)
+
+
+
+
+shinyApp(function(input, output, session)){
+  
+  # ------------ Functions for the Server -------------------
+  # This would be aesthetics like palettes
+  
+  
+  
+  #------------ Importing Data ----------------
+  
+  dat <- reactive ({
+    
+    infile <- input$file
+    if (is.null(infile)) {
+      return(NULL)
+    }
+    
+    
+    
+    readxl::read_excel(infile$datapath) %>% 
+      rename("ID" = "ID", 
+             "StartTime" = "Start time", 
+             "EndTime" = "Completion time", 
+             "StudentName" = "Student Name", 
+             "StudentMatricNumber" = "Student matriculation number (i.e s1234567)", 
+             "Assessor" = "Assessor name and job role (for email)", 
+             "SelfComplete" = "Is the student completing this form on behalf of the assessor?",
+             "Rotation" = "Title of rotation week", 
+             "Species" = "Please indicate which species you were working with for this observation", 
+             "ReferralYN" = "Does this feedback observation relate to a referral level procedure? (See guidance notes)", 
+             "MainTask" = "Please indicate the nature of the mini-CEx observation (i.e. what was the main task?)", 
+             "TaskSummary" = "Brief summary of task performed (include case signalment and presenting problem, if\r\nappropriate). 1-2 sentences only required here.", 
+             "DateEvent" = "Date of feedback observation", 
+             "Organisation" = "Organisation: well organised approach to the task; evidence of suitable preparation beforehand", 
+             "Communication" = "Communication: effectively communicates with client/colleagues including appropriate use of language, non-verbal skills and rapport", 
+             "History" = "History Taking (where applicable): methodical approach; relevant information gathered, appropriate recording", 
+             "PhysicalExam" = "Physical Examination of Patient (where applicable): Methodical approach; competent examination performed; relevant data gathered and recorded; considerate patient handling throughout",
+             "ClinicalSkills" =  "Clinical Skills: task competently performed with/without instruction; good manual dexterity; safe and appropriate handling of equipment" , 
+             "ClinicalReasoning" = "Clinical Reasoning: Appropriate treatment plan formulated based on information available; rational selection of further diagnostic tests/procedures or next steps", 
+             "OverallAssessorFeedback" = "Assessor feedback on the student's overall professionalism and competence\r\non this occasion", 
+             "Feedback_forNextTime" = "Please provide some general feedback for the student on what they did well and\r\nwhat they should work on for next time" , 
+             "StudentReflection" = "Student self-reflection on feedback received and next steps",
+             "StudentDeclaration" = "Student declaration: I confirm that I have checked the contents of this form with my assessor prior to submission and they have approved it") %>% 
+      mutate(matric = str_extract(Email, "\\D\\d\\d\\d\\d\\d\\d\\d")) %>% 
+      mutate(matric = case_when (is.na(matric) ~ str_extract(StudentMatricNumber, "\\D\\d\\d\\d\\d\\d\\d\\d"),
+                                 TRUE ~ as.character(matric)),
+             DateOfTask = lubridate::dmy(str_extract(DateEvent, "\\d\\d\\-\\d\\d\\-\\d\\d")),
+             taskCounter = 1,
+             speciesShort = case_when(Species == "Cattle" |
+                                        Species == "ruminants" |
+                                        Species == "Ruminants" |
+                                        Species == "Sheep" |
+                                        Species == "Cattle/sheep/pig" |
+                                        Species == "Pigs" ~ "FarmAnimal",
+                                      Species == "Other exotics" |
+                                        Species == "Parrot" |
+                                        Species == "Reptile" |
+                                        Species == "Small mammals" |
+                                        Species == "Guinea Pig" |
+                                        Species == "Tortoise" ~ "Exotic_smallMammal",
+                                      Species == "Cats" ~ "Cat",
+                                      Species == "Dogs" ~ "Dog",
+                                      Species == "Horses or other equids" ~ "Equids",
+                                      Species == "Various" ~ "NotNamed",
+                                      Species == "Other" ~ "Other",
+                                      TRUE ~ "NotDone"),
+             ClinicalExam = case_when(str_detect(MainTask, "Clinical examination") ~ 1, TRUE ~ 0),
+             MedOrSurgTx = case_when(str_detect(MainTask, "Medical or surgical treatment") ~ 1, TRUE ~ 0),
+             Diagnostics = case_when(str_detect(MainTask, "Diagnostic procedures") ~ 1, TRUE ~ 0),
+             CommsSkills = case_when(str_detect(MainTask, "Communication skills") ~ 1, TRUE ~ 0),
+             SurgTx = case_when(str_detect(MainTask, "Surgical treatment") ~ 1, TRUE ~ 0),
+             MedTx = case_when(str_detect(MainTask, "Medical treatment") ~ 1, TRUE ~ 0),
+             Other = case_when(str_detect(MainTask, "Other") ~ 1, TRUE ~ 0),
+             ppe = str_detect(TaskSummary, 'PPE | ppe | Don | ultra | Ultra | don | dof | Dof | barrier | Barrier | Isolation | isolation'),
+             surg = str_detect(MainTask, 'Surgical | surgical')) 
+    
+    
+  
+    
+  })
+  
+  
+  
+  # -------------- Output StuLong ----------
+  
+  
+  output$stuTasks <- renderDT({
+    if (!is.null(dat())) {
+      dat %>%
+        group_by(matric) %>% 
+        summarise(ClinExam = sum(ClinicalExam),
+                  MedOrSurgTx = sum(MedOrSurgTx),
+                  SurgTx = sum(SurgTx),
+                  MedTx = sum(MedTx),
+                  CommsSkills = sum(CommsSkills),
+                  Diagnostics = sum(Diagnostics),
+                  Other = sum(Other),
+                  totalTasks = sum(taskCounter)) %>%
+        # because some tasks cover more than one theme so tasks might not equal total themes
+        mutate(totalThemes = ClinExam + MedOrSurgTx + SurgTx + MedTx + CommsSkills + Diagnostics + Other)
+    }
+    
+    
+  })
+  
+
+  #--------------- Output StuTasks Long ----------
+  
+  
+  output$stuTasksLong<- renderDT({
+    if (!is.null(stuTasks())) {
+      stuTasks %>% 
+        pivot_longer(cols = -c(matric, totalThemes, totalTasks), names_to = "Task", values_to = "count") %>% 
+        mutate(taskCounter2 = case_when(count >  0 ~ 1, 
+                                        count < 1 ~ 0,
+                                        TRUE ~ 400))
+    }
+    
+    
+  })
+  
+  
+  
+
+  
+  
+  
+  #------------- Output Raw Data ----------------
+  
+  output$raw_data <- renderDT({
+    if (!is.null(dat())) {
+      dat()
+    }
+
+    
+  })
+    
+    
+    
+    
+
+  #------------------ Output Analysis --------------------    
+    
+    
+    
+    
+    
+    #-------------  Close Server App Brackets -----------------
+ 
+}

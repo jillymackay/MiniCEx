@@ -1,0 +1,39 @@
+
+library(shiny)
+library(DT)
+
+
+
+
+shinyUI(
+  navbarPage(title = "MiniCEx Analyses",
+             id = "navbar",
+             
+             tabPanel(title = "Import your data",
+                      sidebarLayout(
+                        sidebarPanel(tags$p("Export your MiniCEx data as an xlsx file and upload it below."),
+                                     fileInput(inputId = "file",
+                                               label = "Upload your xlsx file here")),
+                        mainPanel(tags$h2("Data snapshot"),
+                                  tags$p("Once your data is uploaded it will appear here. It should look like your excel
+                                  file. If this doesn't look right, your analyses will not be correct"),
+                                  DTOutput("raw_data")
+                        )
+                      )),
+             
+             # -------------- Output -----------------------         
+             
+             tabPanel(title = "Data Output",
+                      fluidPage(
+                        fluidRow(column(width = 6, 
+                                        plotOutput(outputId = "start_plot"))
+                                 )))
+             
+             
+             
+             
+             
+             
+             # ------------- app close brackets---------------
+             
+))

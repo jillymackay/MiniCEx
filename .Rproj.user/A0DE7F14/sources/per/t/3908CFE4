@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1677856654272.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2147255990",
+    "id" : "3908CFE4",
+    "lastKnownWriteTime" : 1677858220,
+    "last_content_update" : 1677858220791,
+    "path" : "~/data/Shiny/MiniCEx/app/ui.R",
+    "project_path" : "app/ui.R",
+    "properties" : {
+        "cursorPosition" : "26,32",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
