@@ -157,6 +157,17 @@ shinyServer(function(input, output, session){
     mcex_longdatetasks(dat())
   })
   
+  SurgList <- reactive({
+    dat() %>% 
+      select(matric, StudentName, SurgTx) %>% 
+      filter(SurgTx == TRUE) %>%
+      unique()
+  })
+  
+  rotations <- reactive({
+    dat() %>% 
+      janitor::tabyl(Rotation)
+  })
 
   
 
@@ -164,7 +175,7 @@ shinyServer(function(input, output, session){
 
   
   
-  #------------- Output Raw Data ----------------
+  #------------- Output Tables ----------------
   
   output$raw_data <- renderDT({
       dat()
@@ -187,6 +198,29 @@ shinyServer(function(input, output, session){
     notEnoughTasks()
   })
   
+  output$t_below <- renderTable({
+     dat() %>% 
+       filter(OverallAssessorFeedback == "Below expected level") %>% 
+       group_by(matric) %>% 
+       nest(StudentName) %>% 
+       unnest_wider(col = data, names_sep =" ") %>% 
+       select(rowID, matric, `data StudentName`, MainTask, Assessor, DateOfTask) %>%  
+       arrange(DateOfTask, matric) 
+  })
+  
+  
+  
+  output$t_nosurg <- renderTable({
+
+    yearlist() %>%
+      filter(!(yearlist()$matric %in% SurgList()$matric)) 
+  })
+  
+  
+  output$t_rotations <- renderTable({
+    rotations()
+  })
+  
   
     #------------------ Output Plots --------------------    
     
@@ -196,11 +230,96 @@ shinyServer(function(input, output, session){
     })
     
   
+  output$p_datetasks <- renderPlot({
+    mcexplot_datetasks(dat())
+    
+  })
   
   
+  output$p_sppxmat <- renderPlot({
+    mcexplot_tasks(dat(), matric, Spp)
+  })
+  
+  output$p_sppxweek <- renderPlot({
+    mcexplot_tasks(dat(), week, Spp)
+  })
+  
+  output$p_fbackxweek <- renderPlot({
+    mcexplot_tasks(dat(), week, OverallAssessorFeedback)
+  })
+  
+  output$p_fbackxweekfspp <- renderPlot({
+    mcexplot_facettasks(dat(), week, OverallAssessorFeedback, Spp)
+  })
+  
+  output$p_fbackxspp <- renderPlot({
+    mcexplot_tasks(dat(), Spp, OverallAssessorFeedback) +
+      labs("Overall feedback by Species")
+  })
   
   
+  output$p_entrustxmatric <- renderPlot({
+    mcexplot_tasks(dat(), matric, OverallAssessorFeedback)
+  })
   
+  output$p_entrustxtask <- renderPlot({
+    dat() %>% 
+      group_by(matric) %>% 
+      nest(StudentName) %>% 
+      unnest_wider(col = data, names_sep =" ") %>% 
+      ungroup() %>% 
+      select(rowID, matric, Spp, taskCounter,
+             c(Organisation:OverallAssessorFeedback), 
+             c(ClinicalExam:Other)) %>% 
+      pivot_longer(cols = -c(rowID, matric, Spp, taskCounter, Organisation:OverallAssessorFeedback),
+                   names_to = "Task",
+                   values_to = "T/F") %>% 
+      filter(`T/F` == TRUE) %>% 
+      select(-`T/F`) %>% 
+      pivot_longer(cols = -c(rowID, matric, Spp, taskCounter, Task),
+                   names_to = "Feedback",
+                   values_to = "Score") %>% 
+      filter(!is.na(Score),
+             Feedback != "OverallAssessorFeedback") %>% 
+      ggplot(aes(x = Feedback, y = Score, fill = Score)) +
+      geom_bar(stat = "identity") +
+      facet_wrap(facets = ~ Task) +
+      theme(axis.text.x = element_text(angle = 90), 
+            legend.position = 'bottom',
+            axis.title.y=element_blank(),
+            axis.text.y=element_blank(),
+            axis.ticks.y=element_blank())
+    
+  })
+  
+  
+  output$p_fbackxtask <- renderPlot({
+    dat() %>% 
+      group_by(matric) %>% 
+      nest(StudentName) %>% 
+      unnest_wider(col = data, names_sep =" ") %>% 
+      ungroup() %>% 
+      select(rowID, matric, Spp, taskCounter, Organisation:OverallAssessorFeedback, ClinicalExam:Other) %>% 
+      pivot_longer(cols = -c(rowID, matric, Spp, taskCounter,
+                             c(Organisation:OverallAssessorFeedback)),
+                   names_to = "Task",
+                   values_to = "T/F") %>% 
+      filter(`T/F` == TRUE) %>% 
+      select(-`T/F`) %>% 
+      pivot_longer(cols = -c(rowID, matric, Spp, taskCounter, Task),
+                   names_to = "Feedback",
+                   values_to = "Score") %>% 
+      filter(!is.na(Score),
+             Feedback == "OverallAssessorFeedback") %>% 
+      ggplot(aes(x = Feedback, y = Score, fill = Score)) +
+      geom_bar(stat = "identity") +
+      facet_wrap(facets = ~ Task) +
+      theme(axis.text.x = element_text(angle = 90), 
+            legend.position = 'bottom',
+            axis.title.y=element_blank(),
+            axis.text.y=element_blank(),
+            axis.ticks.y=element_blank())
+  })
   
   # ---------- Inglis Processing ----------------
   

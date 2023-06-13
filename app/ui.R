@@ -45,9 +45,41 @@ shinyUI(
                                                 tableOutput(outputId = "t_net")
                                                 )),
                                 fluidRow(column(width = 12,
-                                                plotOutput(outputId = "start_plot")
-                                                ))
-                                
+                                                tags$h2("Distribution of task type by date"),
+                                                plotOutput(outputId = "p_datetasks")
+                                                )),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Species used for MiniCEx per student"),
+                                                plotOutput(outputId = "p_sppxmat"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Species logged per week"),
+                                                plotOutput(outputId = "p_sppxweek"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Overall performance marks by date"),
+                                                plotOutput(outputId = "p_fbackxweek"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Overall performance by species and date"),
+                                                plotOutput(outputId = "p_fbackxweekfspp"),
+                                                plotOutput(outputId = "p_fbackxspp"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Students performing below expected level"),
+                                                tags$p("Students who performed below expected level, task and assessor shown. New students shown at bottom of table"),
+                                                tableOutput(outputId = "t_below"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Entrustability scores by student"),
+                                                plotOutput(outputId = "p_entrustxmatric"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Entrustability by Task"),
+                                                plotOutput(outputId = "p_entrustxtask"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Overall feedback by Task"),
+                                                plotOutput(outputId = "p_fbackxtask"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Students with no surgery task"),
+                                                tableOutput(outputId = "t_nosurg"))),
+                                fluidRow(column(width = 12,
+                                                tags$h2("Rotations"),
+                                                tableOutput(outputId = "t_rotations")))
                                 )),
              
              
