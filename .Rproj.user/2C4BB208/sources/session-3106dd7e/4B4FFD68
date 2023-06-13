@@ -3,15 +3,17 @@
     "path": "~/data/Mini CEx Local Mirror/MiniCExReport_2324_v3.Rmd",
     "project_path": null,
     "type": "r_markdown",
-    "hash": "2547945929",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1686652274707.0,
     "source_on_save": false,
     "relative_order": 3,
     "properties": {
-        "source_window_id": "",
-        "Source": "Source"
+        "source_window_id": "wun4q8rheojgn",
+        "Source": "Source",
+        "cursorPosition": "26,0",
+        "scrollLine": "12"
     },
     "folds": "",
     "lastKnownWriteTime": 1686567633,

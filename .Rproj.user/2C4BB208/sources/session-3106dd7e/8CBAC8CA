@@ -3,7 +3,7 @@
     "path": "~/data/Shiny/MiniCEx/app/server.R",
     "project_path": "app/server.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "3209930328",
     "contents": "",
     "dirty": false,
     "created": 1677686549238.0,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "183,26",
-        "scrollLine": "0"
+        "cursorPosition": "128,4",
+        "scrollLine": "115"
     },
     "folds": "",
-    "lastKnownWriteTime": 1686652072,
+    "lastKnownWriteTime": 1686653674,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1686652072121,
+    "last_content_update": 1686653674814,
     "read_only": false,
     "read_only_alternatives": []
 }

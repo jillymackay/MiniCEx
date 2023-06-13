@@ -117,33 +117,51 @@ shinyServer(function(input, output, session){
   
   
   
-  # -------------- Output StuLong ----------
+  # -------------- Create Reactive Objects from Data ----------
   
   
-  output$stuTasks <- renderDT({
-    if (!is.null(dat())) {
-   mcex_tasks(dat())
-    }
+  date_of_data <- reactive({
     
+    req(input$minicex_file)
     
+    infile <- input$minicex_file
+    
+    req(input$minicex_file,
+        file.exists(input$minicex_file$datapath))
+    
+    file.info(infile)$ctime
+  })
+    
+  
+  WeekNumberRequirement <- reactive ({
+    mcex_weekn("20230605")
+  })
+  
+  stuTasks <- reactive({
+    mcex_tasks(dat())
+  })
+  
+  stuTasksLong <- reactive({
+    mcex_longtasks(dat())
+  })
+  
+  notEnoughTasks <- reactive({
+    mcex_enoughtasks(dat(), WeekNumberRequirement())
+  })
+
+  dateTasks <- reactive({
+    mcex_datetasks(dat())
+  })  
+  
+  dateTasksLong <- reactive({
+    mcex_longdatetasks(dat())
   })
   
 
-  #--------------- Output StuTasks Long ----------
-  
-  
-  output$stuTasksLong<- renderDT({
- 
-     mcex_longtasks(dat())
-    
-    
-    
-  })
-  
-  
   
 
-  
+
+
   
   
   #------------- Output Raw Data ----------------
