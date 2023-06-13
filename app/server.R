@@ -176,7 +176,11 @@ shinyServer(function(input, output, session){
     yearlist()
   })  
     
-    
+  
+  output$nocontrib <- renderDT({
+    yearlist() %>% 
+      filter(!yearlist()$matric %in% dat()$matric)
+  })  
 
   #------------------ Output Plots --------------------    
     
