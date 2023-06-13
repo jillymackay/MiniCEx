@@ -177,12 +177,18 @@ shinyServer(function(input, output, session){
   })  
     
   
-  output$nocontrib <- renderDT({
+  output$t_nocontrib <- renderTable({
     yearlist() %>% 
       filter(!yearlist()$matric %in% dat()$matric)
   })  
 
-  #------------------ Output Plots --------------------    
+
+  output$t_net <- renderTable({
+    notEnoughTasks()
+  })
+  
+  
+    #------------------ Output Plots --------------------    
     
     
     output$start_plot <- renderPlot({

@@ -31,18 +31,24 @@ shinyUI(
              # -------------- Output -----------------------         
              
              tabPanel(title = "MiniCEx Report",
-                      fluidPage(tags$h1("About this report"),
-                                tags$p("This is an in-development version of an app to analyse MiniCEx data. The intention is that the FY team at R(D)SVS will be able to use this app to process and analyse MiniCEx data as needed."),
-                                tags$h4("Version 1"),
-                                tags$h2("Notes"),
-                                tags$h3("Date of file read:"),
-                                tags$p("This MiniCEx analysis was run on data from:"),
-                                tags$h2("Students who have not contributed a MiniCEx"),
-                                tags$p("Note: this requires a valid timetable file to be uploaded"),
-                                DTOutput("nocontrib"),
-                        fluidRow(column(width = 6, 
-                                        plotOutput(outputId = "start_plot"))
-                                 ))),
+                      fluidPage(fluidRow(column(width = 12,
+                                                tags$h1("About this report"),
+                                                tags$p("This is an in-development version of an app to analyse MiniCEx data. The intention is that the FY team at R(D)SVS will be able to use this app to process and analyse MiniCEx data as needed."),
+                                                tags$h4("Version 1"),
+                                                tags$h2("Notes"),
+                                                tags$h3("Date of file read:"),
+                                                tags$p("This MiniCEx analysis was run on data from:"),
+                                                tags$h2("Students who have not contributed a MiniCEx"),
+                                                tags$p("Note: this table requires a valid timetable to be uploaded"),
+                                                tableOutput(outputId = "t_nocontrib"),
+                                                tags$h2("Students who have completed fewer than the required number of tasks"),
+                                                tableOutput(outputId = "t_net")
+                                                )),
+                                fluidRow(column(width = 12,
+                                                plotOutput(outputId = "start_plot")
+                                                ))
+                                
+                                )),
              
              
              
