@@ -84,7 +84,7 @@ shinyServer(function(input, output, session){
     req(input$minicex_file,
         file.exists(input$minicex_file$datapath))
     
-    file.info(infile)$ctime
+    file.info(input$minicex_file$datapath)$ctime
   })
     
   
@@ -287,6 +287,18 @@ shinyServer(function(input, output, session){
             axis.text.y=element_blank(),
             axis.ticks.y=element_blank())
   })
+  
+  
+  # ---------- Output Text -----------------
+  
+  
+  output$txt_date <- renderText(
+    
+    as.character(date_of_data())
+    
+  )
+  
+  
   
   # ---------- Inglis Processing ----------------
   

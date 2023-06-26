@@ -37,7 +37,7 @@ shinyUI(
                                                 tags$h4("Version 1"),
                                                 tags$h2("Notes"),
                                                 tags$h3("Date of file read:"),
-                                                tags$p("This MiniCEx analysis was run on data from:"),
+                                                tags$p("This MiniCEx analysis was run on data from: ", textOutput("txt_date")),
                                                 tags$h2("MiniCEx Submissions to Check"),
                                                 tags$p("These data have an issue where the matriculation number does not match with data collected by MS Forms. 
                                                        These are likely typos in the matriculation but should be reviewed by a human eye and the matriculation number #
