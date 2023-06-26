@@ -38,7 +38,13 @@ shinyUI(
                                                 tags$h2("Notes"),
                                                 tags$h3("Date of file read:"),
                                                 tags$p("This MiniCEx analysis was run on data from:"),
-                                                tags$h2("Students who have not contributed a MiniCEx"),
+                                                tags$h2("MiniCEx Submissions to Check"),
+                                                tags$p("These data have an issue where the matriculation number does not match with data collected by MS Forms. 
+                                                       These are likely typos in the matriculation but should be reviewed by a human eye and the matriculation number #
+                                                       potentially changed in the background spreadsheet. Note, these entries will be creating some errors in the data,
+                                                       e.g. potentially showing a student has fewer than required number of MiniCExs until they are fixed."),
+                                                tableOutput(outputId = "t_matsmatch"),
+                                                tags$h2("Students who have not yet contributed a MiniCEx"),
                                                 tags$p("Note: this table requires a valid timetable to be uploaded"),
                                                 tableOutput(outputId = "t_nocontrib"),
                                                 tags$h2("Students who have completed fewer than the required number of tasks"),

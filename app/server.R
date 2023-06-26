@@ -50,7 +50,8 @@ shinyServer(function(input, output, session){
       setProgress(message = "Processing timetable data . . .")
       
       
-     mcex_ttable(ttablefile$datapath, sheet = "2022-2023")
+      mcex_ttable(ttablefile$datapath, sheet = "2022-2023") 
+
       
     })
     
@@ -100,7 +101,11 @@ shinyServer(function(input, output, session){
   })
   
   notEnoughTasks <- reactive({
-    mcex_enoughtasks(dat(), WeekNumberRequirement())
+    
+    WN <- as.numeric(mcex_weekn())
+    mcex_enoughtasks(dat(), WN) %>% 
+      unnest_wider(data_StudentName, names_sep = "_")
+
   })
 
   dateTasks <- reactive({
@@ -124,7 +129,10 @@ shinyServer(function(input, output, session){
   })
 
   
-
+  mats_not_match <- reactive({
+    dat() %>% 
+      mcex_matriccheck()
+  })
 
 
   
@@ -173,6 +181,11 @@ shinyServer(function(input, output, session){
   
   output$t_rotations <- renderTable({
     rotations()
+  })
+  
+  
+  output$t_matsmatch <- renderTable({
+    mats_not_match()
   })
   
   
