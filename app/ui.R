@@ -38,18 +38,24 @@ shinyUI(
                       fluidPage(fluidRow(column(width = 12,
                                                 tags$h1("About this report"),
                                                 tags$p("This is an in-development version of an app to analyse MiniCEx data. The intention is that the FY team at R(D)SVS will be able to use this app to process and analyse MiniCEx data as needed."),
+                                                tags$p("This page expects three files to exist:"),
+                                                tags$li("In Fieldsec > BVMS Years > Final Year > Timetables & Student Groupings > 2023-23 > USE THIS ONE WORKING COPY FY23-24 core rotation timetable.xlsx"),
+                                                tags$li("In Fieldsec > BVMS Years > Final Year > MiniCEx Analyses > AY 2023-2024 > App Data - Save Your MiniCEx Spreadsheet here > FY MiniCE 2023_2024.xlsx"),
+                                                tags$li("In Fieldsec > BVMS Years > Final Year > MiniCEx Analyses > AY 2023-2024 > App Data - Save Your MiniCEx Spreadsheet here > FY MiniCE 2023_2024_RowsToEdit.xlsx"),
+                                                tags$p(),
+                                                tags$p ("If you are having issues with the app, please check that these files are present first. Note that 'FY MiniCE 2023_2024.xlsx' should be saved straight from Teams, and `FY MiniCE 2023_2024_RowsToEdit.xlsx` should only contain rows that need to be edited. If this does not fix the issue, email Jill."),
                                                 tags$h4("Version 1"),
                                                 tags$h2("Notes"),
                                                 tags$h3("Date of file read:"),
-                                                tags$p("This MiniCEx analysis was run on data from:"),
+                                                tags$p("This MiniCEx analysis was run on data from:", textOutput(outputId = "t_dateofdata")),
                                                 tags$h2("MiniCEx Submissions to Check"),
                                                 tags$p("These data have an issue where the matriculation number does not match with data collected by MS Forms. 
-                                                       These are likely typos in the matriculation but should be reviewed by a human eye and the matriculation number #
-                                                       potentially changed in the background spreadsheet. Note, these entries will be creating some errors in the data,
+                                                       These are likely typos in the matriculation but should be reviewed by a human eye and if erroneous data is spotted,
+                                                       copy and paste the row into the edit spreadsheet and (as good practice) highlight the cells you change. After you have
+                                                       saved the data, reload the app. Note that any entry in the table below will be creating some errors in the data,
                                                        e.g. potentially showing a student has fewer than required number of MiniCExs until they are fixed."),
                                                 tableOutput(outputId = "t_matsmatch"),
                                                 tags$h2("Students who have not yet contributed a MiniCEx"),
-                                                tags$p("Note: this table requires a valid timetable to be uploaded"),
                                                 tableOutput(outputId = "t_nocontrib"),
                                                 tags$h2("Students who have completed fewer than the required number of tasks"),
                                                 tableOutput(outputId = "t_net")

@@ -1,3 +1,11 @@
+list.of.packages <- c("shiny", "tidyverse")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+mcex_install <- !("minicexpack") %in% installed.packages()[, "Package"]
+if (mcex_install) devtools::install_github("jillymackay/minicexpack")
+
+
+
 library(shiny)
 library(tidyverse)
 library(minicexpack)
@@ -54,7 +62,7 @@ shinyServer(function(input, output, session){
   
   date_of_data <- reactive({
 
-    file.info("//cmvm.datastore.ed.ac.uk/cmvm/mvmsan/rdsvsshared/Fieldsec/BVMS Years/Final Year/MiniCEx Analyses/AY 2023-2024/App Data - Save Your MiniCEx Spreadsheet Here/FY MiniCE 2023_2024_RowsToEdit.xlsx")$ctime
+    as.character(file.info("//cmvm.datastore.ed.ac.uk/cmvm/mvmsan/rdsvsshared/Fieldsec/BVMS Years/Final Year/MiniCEx Analyses/AY 2023-2024/App Data - Save Your MiniCEx Spreadsheet Here/FY MiniCE 2023_2024_RowsToEdit.xlsx")$ctime)
   })
     
   
@@ -114,6 +122,10 @@ shinyServer(function(input, output, session){
     
   })
     
+  
+  output$t_dateofdata <- renderText({
+    date_of_data()
+  })
   
   output$raw_yl <- renderDT({
     yearlist()
