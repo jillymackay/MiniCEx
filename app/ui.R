@@ -9,24 +9,28 @@ shinyUI(
   navbarPage(title = "MiniCEx Analyses",
              id = "navbar",
              
-             tabPanel(title = "Upload your data",
-                      fluidPage(fluidRow(tags$p("Upload your MiniCEx data here"),
-                                         tags$em("Note: This should be an excel file exactly as downloaded from Sharepoint. If you make modifications to that file, particularly to column headings, you may get unexpected and unreliable results"),
-                                         fileInput(inputId = "minicex_file",
-                                                   label = "Upload your xlsx file here")),
-                                fluidRow(tags$p("If you want, you can also upload a FY timetable"),
-                                         tags$em("Please note this utility is still under development."),
-                                         fileInput(inputId = "timetable",
-                                                   label ="Upload your timetable xlsx file here")),
-                                fluidRow(tags$h2("MiniCEx Snapshot"),
-                                         tags$p("Once your MiniCEx data is uploaded it will appear here. It shoud look like your excel file, but with some extra columns at the end.
-                                                If this doesn't look right at this stage, double check that your file hasn't been changed from the version downloaded
-                                                from Sharepoint."),
-                                         tags$p("You can search and browse through the MiniCEx data here, e.g. search for student matric `s1234567` or assessor `Alex Corbishley`."),
-                                         DTOutput("raw_data")),
-                                fluidRow(tags$h2("Yearlist Snapshot"),
-                                         DTOutput("raw_yl")))
-             ),
+             # tabPanel(title = "Upload your data",
+             #          fluidPage(fluidRow(tags$p("Upload your MiniCEx data here"),
+             #                             tags$em("Note: This should be an excel file exactly as downloaded from Sharepoint. If you make modifications to that file, particularly to column headings, you may get unexpected and unreliable results"),
+             #                             fileInput(inputId = "minicex_file",
+             #                                       label = "Upload your xlsx file here")),
+             #                    fluidRow(tags$p("Upload your edit file data here"),
+             #                             tags$em("Note: This should be an excel file exactly as downloaded from Sharepoint. If you make modifications to that file, particularly to column headings, you may get unexpected and unreliable results"),
+             #                             fileInput(inputId = "minicex_edit",
+             #                                       label = "Upload your xlsx file here")),
+             #                    fluidRow(tags$p("If you want, you can also upload a FY timetable"),
+             #                             tags$em("Please note this utility is still under development."),
+             #                             fileInput(inputId = "timetable",
+             #                                       label ="Upload your timetable xlsx file here")),
+             #                    fluidRow(tags$h2("MiniCEx Snapshot"),
+             #                             tags$p("Once your MiniCEx data is uploaded it will appear here. It shoud look like your excel file, but with some extra columns at the end.
+             #                                    If this doesn't look right at this stage, double check that your file hasn't been changed from the version downloaded
+             #                                    from Sharepoint."),
+             #                             tags$p("You can search and browse through the MiniCEx data here, e.g. search for student matric `s1234567` or assessor `Alex Corbishley`."),
+             #                             DTOutput("raw_data")),
+             #                    fluidRow(tags$h2("Yearlist Snapshot"),
+             #                             DTOutput("raw_yl")))
+             # ),
              
              # -------------- Output -----------------------         
              

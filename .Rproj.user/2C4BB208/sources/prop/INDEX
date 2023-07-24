@@ -1,4 +1,3 @@
-
 %2F%2Fcmvm.datastore.ed.ac.uk%2Fcmvm%2Feb%2Fusers%2Fjmackay4%2FOperational%2FShiny%20Apps%2FMiniCEx%2FLICENSE="E9EE9027"
 %2F%2Fcmvm.datastore.ed.ac.uk%2Fcmvm%2Feb%2Fusers%2Fjmackay4%2FOperational%2FShiny%20Apps%2FMiniCEx%2FR%2Fdata_processing.R="46413AC7"
 %2F%2Fcmvm.datastore.ed.ac.uk%2Fcmvm%2Feb%2Fusers%2Fjmackay4%2FOperational%2FShiny%20Apps%2FMiniCEx%2FREADME.md="1E39933B"
@@ -16,3 +15,4 @@
 ~%2Fdata%2FShiny%2FMiniCEx%2Fapp%2Fui.R="302573CE"
 ~%2Fdata%2FShiny%2FMiniCEx%2Fapp%2Futils.R="E7320B9C"
 ~%2Fdata%2FShiny%2Fwordcloudexample%2Fserver.R="DBC96D4E"
+~%2Fdata%2Fminicexpack%2Fminicexpack%2Ftest.R="5BAEFC9B"

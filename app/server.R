@@ -15,45 +15,22 @@ shinyServer(function(input, output, session){
   
   #------------ Importing Data ----------------
   
-  dat <- reactive ({
-    
-    req(input$minicex_file)
-    
-    infile <- input$minicex_file
-    
-    
-    req(input$minicex_file,
-        file.exists(input$minicex_file$datapath))
-    
-    withProgress({
-      setProgress(message = "Processing data . . .")
-      
-    mcex_read(infile$datapath)
-    
-    })
-    
-  })
-  
+   ordat <- reactive ({
+     
+     mcex_read("//cmvm.datastore.ed.ac.uk/cmvm/mvmsan/rdsvsshared/Fieldsec/BVMS Years/Final Year/MiniCEx Analyses/AY 2023-2024/App Data - Save Your MiniCEx Spreadsheet Here/FY MiniCE 2023_2024.xlsx")
+   
+       })
+   
+   dat <- reactive({
+     
+     req(ordat())
+     mcex_edit("//cmvm.datastore.ed.ac.uk/cmvm/mvmsan/rdsvsshared/Fieldsec/BVMS Years/Final Year/MiniCEx Analyses/AY 2023-2024/App Data - Save Your MiniCEx Spreadsheet Here/FY MiniCE 2023_2024_RowsToEdit.xlsx", ordat())
+   })
   
   
   ttable <- reactive ({
     
-    req(input$timetable)
-    
-    ttablefile <- input$timetable
-    
-    
-    req(input$timetable,
-        file.exists(input$timetable$datapath))
-    
-    withProgress({
-      setProgress(message = "Processing timetable data . . .")
-      
-      
-      mcex_ttable(ttablefile$datapath, sheet = "2022-2023") 
-
-      
-    })
+    mcex_ttable("//cmvm.datastore.ed.ac.uk/cmvm/mvmsan/rdsvsshared/Fieldsec/BVMS Years/Final Year/Timetables & Student Groupings/2023-24/USE THIS ONE WORKING COPY FY23-24 core rotation timetable.xlsx", sheet = "23-24")
     
   })
   
@@ -76,15 +53,8 @@ shinyServer(function(input, output, session){
   
   
   date_of_data <- reactive({
-    
-    req(input$minicex_file)
-    
-    infile <- input$minicex_file
-    
-    req(input$minicex_file,
-        file.exists(input$minicex_file$datapath))
-    
-    file.info(infile)$ctime
+
+    file.info("//cmvm.datastore.ed.ac.uk/cmvm/mvmsan/rdsvsshared/Fieldsec/BVMS Years/Final Year/MiniCEx Analyses/AY 2023-2024/App Data - Save Your MiniCEx Spreadsheet Here/FY MiniCE 2023_2024_RowsToEdit.xlsx")$ctime
   })
     
   
