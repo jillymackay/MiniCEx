@@ -50,53 +50,8 @@ shinyServer(function(input, output, session){
       setProgress(message = "Processing timetable data . . .")
       
       
-      readxl::read_excel(ttablefile$datapath, sheet = "2022-2023", range = "A6:AP183") %>% 
-        mutate(name = paste0(`...3`," ", `...4`)) %>% 
-        select(c("...2", "1":"28", name)) %>% 
-        rename(matric = "...2",
-               "05-06-23" = "1",
-               "12-06-23" = "2",
-               "19-06-23" = "3",
-               "26-06-23" = "4",
-               "03-07-23" = "...11",
-               "10-07-23" = "...12",
-               "17-07-23" = "...13",
-               "24-07-23" = "...14",
-               "31-07-23" = "5",
-               "07-08-23" = "6",
-               "14-08-23" = "7",
-               "21-08-23" = "8",
-               "28-08-23" = "9",
-               "04-09-23" = "10",
-               "11-09-23" = "11",
-               "18-09-23" = "12",
-               "25-09-23" = "13",
-               "02-10-23" = "14",
-               "09-10-23" = "15",
-               "16-10-23" = "16",
-               "23-10-23" = "17",
-               "30-10-23" = "18",
-               "06-11-23" = "19",
-               "13-11-23" = "20",
-               "20-11-23" = "21",
-               "27-11-23" = "22",
-               "04-12-23" = "23",
-               "11-12-23" = "24",
-               "18-12-23" = "...35",
-               "25-12-23" = "...36",
-               "01-01-24" = "...37",	
-               "08-01-24" = "**",
-               "15-01-24" = "25",
-               "22-01-24" = "26",
-               "29-01-24" = "27",
-               "05-02-24" = "28")  %>% 
-        pivot_longer(cols = -c(matric, name), 
-                     names_to = "Week",
-                     values_to = "Rotation") %>% 
-        mutate (WeekN = dmy(Week),
-                WeekN = lubridate::week(WeekN)) %>% 
-        mutate (Rotation =  zoo::na.locf(Rotation),
-                matric = tolower(matric))
+      mcex_ttable(ttablefile$datapath, sheet = "2022-2023") 
+
       
     })
     
@@ -134,7 +89,7 @@ shinyServer(function(input, output, session){
     
   
   WeekNumberRequirement <- reactive ({
-    mcex_weekn("20230605")
+    mcex_weekn()
   })
   
   stuTasks <- reactive({
@@ -146,7 +101,11 @@ shinyServer(function(input, output, session){
   })
   
   notEnoughTasks <- reactive({
-    mcex_enoughtasks(dat(), WeekNumberRequirement())
+    
+    WN <- as.numeric(mcex_weekn())
+    mcex_enoughtasks(dat(), WN) %>% 
+      unnest_wider(data_StudentName, names_sep = "_")
+
   })
 
   dateTasks <- reactive({
@@ -170,7 +129,10 @@ shinyServer(function(input, output, session){
   })
 
   
-
+  mats_not_match <- reactive({
+    dat() %>% 
+      mcex_matriccheck()
+  })
 
 
   
@@ -219,6 +181,11 @@ shinyServer(function(input, output, session){
   
   output$t_rotations <- renderTable({
     rotations()
+  })
+  
+  
+  output$t_matsmatch <- renderTable({
+    mats_not_match()
   })
   
   
@@ -325,10 +292,15 @@ shinyServer(function(input, output, session){
   
   inglisthisweek <- reactive({
     
-    ttable() %>% 
-      filter(WeekN == lubridate::week(Sys.Date()),
-             Rotation == "Inglis Veterinary Practice") %>% 
-      select(matric, name)
+    req(input$timetable)
+    
+    ttablefile <- input$timetable
+    
+    
+    req(input$timetable,
+        file.exists(input$timetable$datapath))
+    
+    mcex_inglis(ttablefile$datapath, sheet = "2022-2023")
     
     
   })
@@ -343,15 +315,19 @@ shinyServer(function(input, output, session){
   
   output$inglisthisweek_none <- renderDT({
     
+    mdat <- dat() %>% 
+      filter(WeekN == lubridate::week(Sys.Date()))
+    
     inglisthisweek() %>% 
-      filter(!(matric %in% dat()$matric)) 
+      filter(!(matric %in% mdat$matric)) 
   })
   
     
   
   output$inglis_tasks <- renderDT({
     dat() %>% 
-      filter(matric %in% inglisthisweek()$matric) %>% 
+      filter(matric %in% inglisthisweek()$matric,
+             WeekN == lubridate::week(Sys.Date())) %>% 
       select(matric, StudentName, taskCounter) %>% 
       group_by(matric) %>% 
       add_tally() %>% 
@@ -364,7 +340,8 @@ shinyServer(function(input, output, session){
   output$inglis_tasks_less2 <- renderDT({
     
     dat() %>% 
-      filter(matric %in% inglisthisweek()$matric) %>% 
+      filter(matric %in% inglisthisweek()$matric,
+             WeekN == lubridate::week(Sys.Date())) %>% 
       select(matric, StudentName, taskCounter) %>% 
       group_by(matric) %>% 
       add_tally() %>% 
