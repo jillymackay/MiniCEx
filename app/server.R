@@ -209,40 +209,48 @@ shinyServer(function(input, output, session){
     
     
     output$start_plot <- renderPlot({
-      mcexplot_tasks(dat())
+      mcexplot_tasks(dat())+
+        scale_fill_uoe()
     })
     
   
   output$p_datetasks <- renderPlot({
-    mcexplot_datetasks(dat())
+    mcexplot_datetasks(dat())+
+      scale_fill_uoe()
     
   })
   
   
   output$p_sppxmat <- renderPlot({
-    mcexplot_tasks(dat(), matric, Spp)
+    mcexplot_tasks(dat(), matric, Spp)+
+      scale_fill_uoe()
   })
   
   output$p_sppxweek <- renderPlot({
-    mcexplot_tasks(dat(), week, Spp)
+    mcexplot_tasks(dat(), week, Spp)+
+      scale_fill_uoe()
   })
   
   output$p_fbackxweek <- renderPlot({
-    mcexplot_tasks(dat(), week, OverallAssessorFeedback)
+    mcexplot_tasks(dat(), week, OverallAssessorFeedback)+
+      scale_fill_uoe()
   })
   
   output$p_fbackxweekfspp <- renderPlot({
-    mcexplot_facettasks(dat(), week, OverallAssessorFeedback, Spp)
+    mcexplot_facettasks(dat(), week, OverallAssessorFeedback, Spp)+
+      scale_fill_uoe()
   })
   
   output$p_fbackxspp <- renderPlot({
     mcexplot_tasks(dat(), Spp, OverallAssessorFeedback) +
-      labs("Overall feedback by Species")
+      labs("Overall feedback by Species")+
+      scale_fill_uoe()
   })
   
   
   output$p_entrustxmatric <- renderPlot({
-    mcexplot_tasks(dat(), matric, OverallAssessorFeedback)
+    mcexplot_tasks(dat(), matric, OverallAssessorFeedback)+
+      scale_fill_uoe()
   })
   
   output$p_entrustxtask <- renderPlot({
@@ -271,7 +279,8 @@ shinyServer(function(input, output, session){
             legend.position = 'bottom',
             axis.title.y=element_blank(),
             axis.text.y=element_blank(),
-            axis.ticks.y=element_blank())
+            axis.ticks.y=element_blank()) +
+      scale_fill_uoe()
     
   })
   
@@ -301,7 +310,8 @@ shinyServer(function(input, output, session){
             legend.position = 'bottom',
             axis.title.y=element_blank(),
             axis.text.y=element_blank(),
-            axis.ticks.y=element_blank())
+            axis.ticks.y=element_blank()) +
+      scale_fill_uoe()
   })
   
   # ---------- Inglis Processing ----------------
@@ -316,7 +326,7 @@ shinyServer(function(input, output, session){
     req(input$timetable,
         file.exists(input$timetable$datapath))
     
-    mcex_inglis(ttablefile$datapath, sheet = "2022-2023")
+    mcex_inglis(ttablefile$datapath, sheet = "23-24")
     
     
   })
@@ -366,6 +376,19 @@ shinyServer(function(input, output, session){
     
   })
   
+  
+  # ---------------------- Flat Images -------------------
+  
+  
+  output$logo <- renderImage({
+    # Return a list containing the filename
+    list(src = file.path("media/RDVS_2col_cmyk.png"),
+         contentType = 'image/png',
+         width = 221,
+         height = 52,
+         alt = "R(D)SVS Logo")
+  }, deleteFile = FALSE)
+
   
     #-------------  Close Server App Brackets -----------------
  
