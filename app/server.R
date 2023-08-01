@@ -1,6 +1,6 @@
 library(shiny)
 library(tidyverse)
-library(minicexpack)
+
 
 
 
@@ -15,7 +15,7 @@ shinyServer(function(input, output, session){
   
   #------------ Importing Data ----------------
   
-  dat <- reactive ({
+  olddat <- reactive ({
     
     req(input$minicex_file)
     
@@ -34,7 +34,23 @@ shinyServer(function(input, output, session){
     
   })
   
-  
+  dat <- reactive ({
+    
+    req(input$edits, olddat())
+    
+    infile <- input$edits
+    
+    
+    req(input$edits,
+        file.exists(input$edits$datapath))
+    
+    withProgress({
+      setProgress(message = "Processing data . . .")
+      
+      mcex_edit(infile$datapath, olddat())
+      
+    })
+  })
   
   ttable <- reactive ({
     
@@ -50,7 +66,7 @@ shinyServer(function(input, output, session){
       setProgress(message = "Processing timetable data . . .")
       
       
-      mcex_ttable(ttablefile$datapath, sheet = "2022-2023") 
+      mcex_ttable(ttablefile$datapath, sheet = "23-24") 
 
       
     })
@@ -150,7 +166,7 @@ shinyServer(function(input, output, session){
   })  
     
   
-  output$t_nocontrib <- renderTable({
+  output$t_nocontrib <- renderDT({
     yearlist() %>% 
       filter(!yearlist()$matric %in% dat()$matric)
   })  
