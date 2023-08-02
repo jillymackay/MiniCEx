@@ -232,7 +232,13 @@ shinyServer(function(input, output, session){
   })
   
   output$p_fbackxweek <- renderPlot({
-    mcexplot_tasks(dat(), week, OverallAssessorFeedback)+
+    # mcexplot_tasks(dat(), week, OverallAssessorFeedback)
+    # 
+    dat() %>% 
+      mutate(week = week(DateOfTask)) %>% 
+      ggplot(aes(x=week, y=taskCounter, fill = OverallAssessorFeedback)) +
+      geom_bar(stat = "identity") +
+      theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom') +
       scale_fill_uoe()
   })
   
@@ -243,8 +249,8 @@ shinyServer(function(input, output, session){
   
   output$v_fbackxweek <- renderPrint({
     hover <- input$ph_fbackxweek
-    x <- nearPoints(dat(), input$ph_fbackxweek)[input$matric]
-    req(nrow(x)!= 0)
+    y <- nearPoints(dat(), input$ph_fbackxweek, xvar = "week", yvar="taskCounter")
+    req(nrow(y)!= 0)
     x
   })
   
