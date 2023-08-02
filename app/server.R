@@ -236,6 +236,18 @@ shinyServer(function(input, output, session){
       scale_fill_uoe()
   })
   
+  output$d_fbackxweek <- renderUI({
+    req(input$ph_fbackxweek)
+    verbatimTextOutput("v_fbackxweek")
+  })
+  
+  output$v_fbackxweek <- renderPrint({
+    hover <- input$ph_fbackxweek
+    x <- nearPoints(dat(), input$ph_fbackxweek)[input$matric]
+    req(nrow(x)!= 0)
+    x
+  })
+  
   output$p_fbackxweekfspp <- renderPlot({
     mcexplot_facettasks(dat(), week, OverallAssessorFeedback, Spp)+
       scale_fill_uoe()
