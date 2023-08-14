@@ -93,14 +93,10 @@ shinyServer(function(input, output, session){
   
   date_of_data <- reactive({
     
-    req(input$minicex_file)
+  dat() %>% 
+      select(DateOfTask) %>% 
+      max(DateOfTask)
     
-    infile <- input$minicex_file
-    
-    req(input$minicex_file,
-        file.exists(input$minicex_file$datapath))
-    
-    file.info(infile)$ctime
   })
     
   
@@ -202,6 +198,10 @@ shinyServer(function(input, output, session){
   
   output$t_matsmatch <- renderTable({
     mats_not_match()
+  })
+  
+  output$s_dateofdata <- renderPrint({
+    date_of_data()
   })
   
   

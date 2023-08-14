@@ -15,7 +15,7 @@ shinyUI(
                       sidebarPanel(fileInput(inputId = "minicex_file",
                                              label = "Upload your MiniCEx.xlsx file here"),
                                    fileInput(inputId = "edits",
-                                             label = "Upload your MiniCEx edit.xlsx file here")),
+                                             label = "Upload your MiniCEx Rows_To_Edit.xlsx file here")),
                       mainPanel(fluidPage(imageOutput("logo", inline = TRUE),
                                           tags$h1("Welcome to the R(D)SVS MiniCEx App"),
                                           tags$p("This app is intended to process and report on the MiniCEx data
@@ -23,21 +23,15 @@ shinyUI(
                                            can be found", tags$a(href = "https://github.com/jillymackay/MiniCEx",  "on github here."), 
                                            "The intention is that the Final Year team can use this dashboard to process the MiniCEx data
                                            at will. If there are any issues with the app, please contact Jill with as full a description of
-                                           the issue as possible." ),
-                                          tags$p("At present, the app requires you to upload three files:"),
+                                           the issue as possible.", tags$em("The most likely issue is that the edit file is no longer compatible"), 
+                                           "and this may be fixed by reverting the last changes if possible." ),
+                                          tags$p("At present, the app requires you to upload two files:"),
                                           tags$ol(tags$li("A MiniCEx file",
                                                           tags$ul("This should be the MiniCEx file as you download it from the FY Teams page.
                                                                   Do not make any edits to this file.")),
-                                                  tags$li("A timetable file",
-                                                          tags$ul("This should be a file describing the timetable of students.
-                                                                  It is basically expecting a file which looks like 
-                                                                  Fieldsec/BVMS Years/
-                                                                  Final Year/Timetables & Student Groupings/2023-24/USE THIS ONE WORKING COPY FY23-24
-                                                                  core rotation timetable.xlsx and it will look at Sheet 23-24. 
-                                                                  This is the file that is most likely to break the app.")),
                                                   tags$li("A MiniCEx edit file",
                                                           tags$ul("This file should look like the MiniCEx file but have only the rows you want to 
-                                                                  edit, ie see Fieldsec/BVMS Years/
+                                                                  edit and have the timetable in a second sheet, ie see Fieldsec/BVMS Years/
                                                                   Final Year/MiniCEx Analyses/AY 2023-2024/App Data - Save Your MiniCEx Spreadsheet Here
                                                                   /FY MiniCE 2023_2024_RowsToEdit.xlsx")))
                                           ),
@@ -59,8 +53,8 @@ shinyUI(
                                                 tags$p("This is an in-development version of an app to analyse MiniCEx data. The intention is that the FY team at R(D)SVS will be able to use this app to process and analyse MiniCEx data as needed."),
                                                 tags$h4("Version 1"),
                                                 tags$h2("Notes"),
-                                                tags$h3("Date of file read:"),
-                                                tags$p("This MiniCEx analysis was run on data from:"),
+                                                tags$h3("Date of data:"),
+                                                tags$p("The last entry in this MiniCEx file is from date:", textOutput("s_dateofdata")),
                                                 tags$h2("MiniCEx Submissions to Check"),
                                                 tags$p("These data have an issue where the matriculation number does not match with data collected by MS Forms. 
                                                        These are likely typos in the matriculation but should be reviewed by a human eye and the matriculation number #
