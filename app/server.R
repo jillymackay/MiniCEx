@@ -54,19 +54,19 @@ shinyServer(function(input, output, session){
   
   ttable <- reactive ({
     
-    req(input$timetable)
+    req(input$edits)
     
-    ttablefile <- input$timetable
+    ttablefile <- input$edits
     
     
-    req(input$timetable,
-        file.exists(input$timetable$datapath))
+    req(input$edits,
+        file.exists(input$edits$datapath))
     
     withProgress({
       setProgress(message = "Processing timetable data . . .")
       
       
-      mcex_ttable(ttablefile$datapath, sheet = "23-24") 
+      mcex_ttable(ttablefile$datapath, sheet = "Timetable - Please Do Not Edit") 
 
       
     })
@@ -336,15 +336,15 @@ shinyServer(function(input, output, session){
   
   inglisthisweek <- reactive({
     
-    req(input$timetable)
+    req(input$edits)
     
-    ttablefile <- input$timetable
+    ttablefile <- input$edits
     
     
-    req(input$timetable,
-        file.exists(input$timetable$datapath))
+    req(input$edits,
+        file.exists(input$edits$datapath))
     
-    mcex_inglis(ttablefile$datapath, sheet = "23-24")
+    mcex_inglis(ttablefile$datapath, sheet = "Timetable - Please Do Not Edit")
     
     
   })

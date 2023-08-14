@@ -14,8 +14,6 @@ shinyUI(
              tabPanel(title = "How to use this app",
                       sidebarPanel(fileInput(inputId = "minicex_file",
                                              label = "Upload your MiniCEx.xlsx file here"),
-                                   fileInput(inputId = "timetable",
-                                             label ="Upload your timetable.xlsx file here"),
                                    fileInput(inputId = "edits",
                                              label = "Upload your MiniCEx edit.xlsx file here")),
                       mainPanel(fluidPage(imageOutput("logo", inline = TRUE),
