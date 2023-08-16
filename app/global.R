@@ -94,12 +94,12 @@ mcex_edit <- function(edit_path, minicex_data) {
     filter(!is.na(rowID)) %>%
     select(rowID)
   
-  repldat <-   readxl::read_excel(edit_path) %>%
+  
+  repldat <-   readxl::read_excel(edit) %>% 
     janitor::clean_names()  %>%
+    filter(!is.na(id)) %>% 
     select(-c(start_time, completion_time)) %>%
-    mutate(date_of_feedback = case_when(str_detect(date_of_feedback, "\\d\\d\\d\\d\\d") ~ as.Date(as.numeric(date_of_feedback), origin = "1899-12-30"),
-                                        is.na(date_of_feedback) ~ NA,
-                                        TRUE ~ as.Date(date_of_feedback, format = "%d/%m/%Y"))) %>%
+    mutate(date_of_feedback = as.Date(date_of_feedback, origin = "1899-12-30")) %>% 
     rename("rowID" = "id",
            "Email" = "email",
            "AutoName" = "name",
