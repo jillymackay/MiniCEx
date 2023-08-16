@@ -95,7 +95,7 @@ mcex_edit <- function(edit_path, minicex_data) {
     select(rowID)
   
   
-  repldat <-   readxl::read_excel(edit) %>% 
+  repldat <-   readxl::read_excel(edit_path) %>% 
     janitor::clean_names()  %>%
     filter(!is.na(id)) %>% 
     select(-c(start_time, completion_time)) %>%

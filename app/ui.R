@@ -10,7 +10,6 @@ shinyUI(
              id = "navbar",
              theme = shinythemes::shinytheme("yeti"),
              
-             
              tabPanel(title = "How to use this app",
                       sidebarPanel(fileInput(inputId = "minicex_file",
                                              label = "Upload your MiniCEx.xlsx file here"),
@@ -69,8 +68,7 @@ shinyUI(
                       )),
                       fluidRow(column(width = 12,
                                       tags$h2("Distribution of task type by date"),
-                                      plotOutput(outputId = "p_datetasks")
-                      )),
+                                      plotOutput(outputId = "p_datetasks"))),
                       fluidRow(column(width = 12,
                                       tags$h2("Species used for MiniCEx per student"),
                                       plotOutput(outputId = "p_sppxmat"))),
@@ -80,7 +78,7 @@ shinyUI(
                       fluidRow(column(width = 12,
                                       tags$h2("Overall performance marks by date"),
                                       plotOutput(outputId = "p_fbackxweek", hover = hoverOpts(id = "ph_fbackxweek", delay = 50)),
-                                      uiOutput("d_fbackxweek"))),
+                                      uiOutput("my_tooltip"))),
                       fluidRow(column(width = 12,
                                       tags$h2("Overall performance by species and date"),
                                       plotOutput(outputId = "p_fbackxweekfspp"),
@@ -128,7 +126,9 @@ shinyUI(
                                 tags$h3("Students believed to be at Inglis this week with recorded tasks"),
                                 DTOutput("inglis_tasks"),
                                 tags$h3("Students believed to be at Inglis this week with fewer than 2 tasks recorded"),
-                                DTOutput("inglis_tasks_less2")
+                                DTOutput("inglis_tasks_less2"),
+                                tags$h3("Tasks at Inglis This Week"),
+                                DTOutput("inglis_fulltasks")
                       ))
              
              

@@ -367,6 +367,14 @@ shinyServer(function(input, output, session){
   })
   
     
+  output$inglis_fulltasks <- renderDT({
+    
+    dat() %>% 
+      filter(matric %in% inglisthisweek()$matric,
+             WeekN == week(Sys.Date())) %>% 
+      select(rowID, StudentName, Rotation, Assessor, Referral, MainTask, OverallAssessorFeedback) 
+  })
+  
   
   output$inglis_tasks <- renderDT({
     dat() %>% 
