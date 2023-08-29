@@ -94,8 +94,9 @@ shinyServer(function(input, output, session){
   date_of_data <- reactive({
     
   dat() %>% 
-      select(DateOfTask) %>% 
-      max(DateOfTask)
+      filter(!is.na(DateEvent)) %>% 
+      summarise(max = max(DateEvent))
+    
     
   })
     
@@ -255,19 +256,14 @@ shinyServer(function(input, output, session){
     verbatimTextOutput("tt_vals")
   })
   
-  output$tt_xvals <- renderPrint({
-    if(is.null(input$ph_fbackxweek)) return()
-    
-    lvls <- levels(dat()$OverallAssessorFeedback)
-    lvls[round(input$ph_fbackxweek$x)]
-  })
+
   
   output$tt_vals <- renderPrint({
     if(is.null(input$ph_fbackxweek)) return()
     
     hover <- input$ph_fbackxweek
+    
     y <- nearPoints(df = dat(), coordinfo = input$ph_fbackxweek) %>% 
-      # filter(OverallAssessorFeedback == input$ph_fbackxweek$x) %>% 
       select(matric, rowID, OverallAssessorFeedback)
     req(nrow(y) != 0)
     y
