@@ -97,9 +97,8 @@ mcex_edit <- function(edit_path, minicex_data) {
   
   repldat <-   readxl::read_excel(edit_path) %>% 
     janitor::clean_names()  %>%
-    filter(!is.na(id)) %>% 
     select(-c(start_time, completion_time)) %>%
-    mutate(date_of_feedback = as.Date(date_of_feedback, origin = "1899-12-30")) %>% 
+    mutate(date_of_feedback = as.Date(date_of_feedback, format = '%Y-%m-%d %H:%M:%S', origin = "1900-01-01 24:00:00")) %>%
     rename("rowID" = "id",
            "Email" = "email",
            "AutoName" = "name",
