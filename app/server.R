@@ -164,13 +164,17 @@ shinyServer(function(input, output, session){
     
   
   output$t_nocontrib <- renderDT({
+
     yearlist() %>% 
       filter(!yearlist()$matric %in% dat()$matric)
+    
   })  
 
 
   output$t_net <- renderTable({
+    withProgress({
     notEnoughTasks()
+    })
   })
   
   output$t_below <- renderTable({
@@ -233,14 +237,14 @@ shinyServer(function(input, output, session){
   })
   
   output$p_fbackxweek <- renderPlot({
-    # mcexplot_tasks(dat(), week, OverallAssessorFeedback)
-    # 
-    dat() %>% 
-      mutate(week = week(DateOfTask)) %>% 
-      ggplot(aes(x=week, y=taskCounter, fill = OverallAssessorFeedback)) +
-      geom_bar(stat = "identity") +
-      theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom') +
-      scale_fill_uoe()
+     mcexplot_tasks(dat(), week, OverallAssessorFeedback)
+    # # 
+    # dat() %>% 
+    #   mutate(week = week(DateOfTask)) %>% 
+    #   ggplot(aes(x=week, y=taskCounter, fill = OverallAssessorFeedback)) +
+    #   geom_bar(stat = "identity") +
+    #   theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom') +
+    #   scale_fill_uoe()
   })
   
   output$d_fbackxweek <- renderUI({
