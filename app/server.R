@@ -137,7 +137,8 @@ shinyServer(function(input, output, session){
   
   rotations <- reactive({
     dat() %>% 
-      janitor::tabyl(Rotation)
+      janitor::tabyl(Rotation) %>% 
+      arrange(percent)
   })
 
   
