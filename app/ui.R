@@ -76,9 +76,31 @@ shinyUI(
                                       tags$h2("Species logged per week"),
                                       plotOutput(outputId = "p_sppxweek"))),
                       fluidRow(column(width = 12,
+                                      tags$head(tags$style('
+                                                           #tt_p_fbackxweek {
+                                                             position: absolute;
+                                                             width: 300px;
+                                                             z-index: 100;
+                                                             padding: 0;
+                                                           }
+                                                           ')),
+                                      tags$script('
+                                                  $(document).ready(function() {
+                                                  // id of the plot
+                                                  $("#p_fbackxweek").mousemove(function(e)) {
+                                                  
+                                                  // ID of uiOutput
+                                                  $("#tt_p_fbackxweek").show();
+                                                  $("#tt_p_fbackxweek").css({
+                                                  top: (e.page% + 5) + "px",
+                                                  left: (e.pageX + 5) + "px"
+                                                  });
+                                                  });
+                                                  });
+                                                  '),
                                       tags$h2("Overall performance marks by date"),
                                       plotOutput(outputId = "p_fbackxweek", hover = hoverOpts(id = "ph_fbackxweek", delay = 50)),
-                                      uiOutput("my_tooltip"))),
+                                      uiOutput("tt_p_fbackxweek"))),
                       fluidRow(column(width = 12,
                                       tags$h2("Overall performance by species and date"),
                                       plotOutput(outputId = "p_fbackxweekfspp"),

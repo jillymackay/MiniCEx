@@ -237,14 +237,40 @@ shinyServer(function(input, output, session){
   })
   
   output$p_fbackxweek <- renderPlot({
-     mcexplot_tasks(dat(), week, OverallAssessorFeedback)
+     # mcexplot_tasks(dat(), week, OverallAssessorFeedback) +
+     #  scale_fill_uoe()
     # # 
-    # dat() %>% 
-    #   mutate(week = week(DateOfTask)) %>% 
-    #   ggplot(aes(x=week, y=taskCounter, fill = OverallAssessorFeedback)) +
-    #   geom_bar(stat = "identity") +
-    #   theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom') +
-    #   scale_fill_uoe()
+     dat() %>% 
+       mutate(week = week(DateOfTask)) %>% 
+       ggplot(aes(x=WeekN, y=taskCounter, fill = OverallAssessorFeedback)) +
+       geom_bar(stat = "identity") +
+       theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom') +
+       scale_fill_uoe()
+  })
+  
+  output$tt_p_fbackxweek <- renderUI({
+    hover <- input$ph_fbackxweek
+    y <- nearPoints(df = dat(), coordinfo = input$ph_fbackxweek)
+    req(nrow(y) != 0)
+    verbatimTextOutput("tt_vals")
+  })
+  
+  output$tt_xvals <- renderPrint({
+    if(is.null(input$ph_fbackxweek)) return()
+    
+    lvls <- levels(dat()$OverallAssessorFeedback)
+    lvls[round(input$ph_fbackxweek$x)]
+  })
+  
+  output$tt_vals <- renderPrint({
+    if(is.null(input$ph_fbackxweek)) return()
+    
+    hover <- input$ph_fbackxweek
+    y <- nearPoints(df = dat(), coordinfo = input$ph_fbackxweek) %>% 
+      # filter(OverallAssessorFeedback == input$ph_fbackxweek$x) %>% 
+      select(matric, rowID, OverallAssessorFeedback)
+    req(nrow(y) != 0)
+    y
   })
   
   output$d_fbackxweek <- renderUI({
