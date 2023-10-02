@@ -19,17 +19,18 @@ Code for Shiny app to allow Vet Final Yr Directors to explore MiniCEx data at th
 
 ## Packages
 
-shinythemes
-shiny
-tidyverse
-lubridate
-readxl
-zoo
-    dplyr,
-    forcats,
-    ggplot2,
-    janitor,
-    lubridate,
-    readxl,
-    stringr,
-    tidyr
+* janitor
+
+* lubridate
+
+* readxl
+
+* shiny
+
+* tidyverse
+
+* DT
+
+* shinythemes
+
+* renv
