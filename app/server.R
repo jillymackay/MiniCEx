@@ -1,6 +1,6 @@
 library(shiny)
 library(tidyverse)
-library(minicexpack)
+
 
 
 
@@ -35,22 +35,22 @@ shinyServer(function(input, output, session){
   })
   
   
-  
   ttable <- reactive ({
     
-    req(input$timetable)
+    req(input$minicex_file)
     
-    ttablefile <- input$timetable
+    infile <- input$minicex_file
     
     
-    req(input$timetable,
-        file.exists(input$timetable$datapath))
+    req(input$minicex_file,
+        file.exists(input$minicex_file$datapath))
+    
     
     withProgress({
       setProgress(message = "Processing timetable data . . .")
       
       
-      mcex_ttable(ttablefile$datapath, sheet = "2022-2023") 
+      readxl::read_excel(infile$datapath, sheet = "Timetable") 
 
       
     })
@@ -77,14 +77,11 @@ shinyServer(function(input, output, session){
   
   date_of_data <- reactive({
     
-    req(input$minicex_file)
+  dat() %>% 
+      filter(!is.na(DateEvent)) %>% 
+      summarise(max = max(DateEvent))
     
-    infile <- input$minicex_file
     
-    req(input$minicex_file,
-        file.exists(input$minicex_file$datapath))
-    
-    file.info(infile)$ctime
   })
     
   
@@ -125,7 +122,8 @@ shinyServer(function(input, output, session){
   
   rotations <- reactive({
     dat() %>% 
-      janitor::tabyl(Rotation)
+      janitor::tabyl(Rotation) %>% 
+      arrange(percent)
   })
 
   
@@ -150,14 +148,18 @@ shinyServer(function(input, output, session){
   })  
     
   
-  output$t_nocontrib <- renderTable({
+  output$t_nocontrib <- renderDT({
+
     yearlist() %>% 
       filter(!yearlist()$matric %in% dat()$matric)
+    
   })  
 
 
   output$t_net <- renderTable({
+    withProgress({
     notEnoughTasks()
+    })
   })
   
   output$t_below <- renderTable({
@@ -188,45 +190,96 @@ shinyServer(function(input, output, session){
     mats_not_match()
   })
   
+  output$s_dateofdata <- renderPrint({
+    date_of_data()
+  })
+  
   
     #------------------ Output Plots --------------------    
     
     
     output$start_plot <- renderPlot({
-      mcexplot_tasks(dat())
+      mcexplot_tasks(dat())+
+        scale_fill_uoe()
     })
     
   
   output$p_datetasks <- renderPlot({
-    mcexplot_datetasks(dat())
+    mcexplot_datetasks(dat())+
+      scale_fill_uoe()
     
   })
   
   
   output$p_sppxmat <- renderPlot({
-    mcexplot_tasks(dat(), matric, Spp)
+    mcexplot_tasks(dat(), matric, Spp)+
+      scale_fill_uoe()
   })
   
   output$p_sppxweek <- renderPlot({
-    mcexplot_tasks(dat(), week, Spp)
+    mcexplot_tasks(dat(), week, Spp)+
+      scale_fill_uoe()
   })
   
   output$p_fbackxweek <- renderPlot({
-    mcexplot_tasks(dat(), week, OverallAssessorFeedback)
+     # mcexplot_tasks(dat(), week, OverallAssessorFeedback) +
+     #  scale_fill_uoe()
+    # # 
+     dat() %>% 
+       mutate(week = week(DateOfTask)) %>% 
+       ggplot(aes(x=WeekN, y=taskCounter, fill = OverallAssessorFeedback)) +
+       geom_bar(stat = "identity") +
+       theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom') +
+       scale_fill_uoe()
+  })
+  
+  output$tt_p_fbackxweek <- renderUI({
+    hover <- input$ph_fbackxweek
+    y <- nearPoints(df = dat(), coordinfo = input$ph_fbackxweek)
+    req(nrow(y) != 0)
+    verbatimTextOutput("tt_vals")
+  })
+  
+
+  
+  output$tt_vals <- renderPrint({
+    if(is.null(input$ph_fbackxweek)) return()
+    
+    hover <- input$ph_fbackxweek
+    
+    y <- nearPoints(df = dat(), coordinfo = input$ph_fbackxweek) %>% 
+      select(matric, rowID, OverallAssessorFeedback)
+    req(nrow(y) != 0)
+    y
+  })
+  
+  output$d_fbackxweek <- renderUI({
+    req(input$ph_fbackxweek)
+    verbatimTextOutput("v_fbackxweek")
+  })
+  
+  output$v_fbackxweek <- renderPrint({
+    hover <- input$ph_fbackxweek
+    y <- nearPoints(dat(), input$ph_fbackxweek, xvar = "week", yvar="taskCounter")
+    req(nrow(y)!= 0)
+    x
   })
   
   output$p_fbackxweekfspp <- renderPlot({
-    mcexplot_facettasks(dat(), week, OverallAssessorFeedback, Spp)
+    mcexplot_facettasks(dat(), week, OverallAssessorFeedback, Spp)+
+      scale_fill_uoe()
   })
   
   output$p_fbackxspp <- renderPlot({
     mcexplot_tasks(dat(), Spp, OverallAssessorFeedback) +
-      labs("Overall feedback by Species")
+      labs("Overall feedback by Species")+
+      scale_fill_uoe()
   })
   
   
   output$p_entrustxmatric <- renderPlot({
-    mcexplot_tasks(dat(), matric, OverallAssessorFeedback)
+    mcexplot_tasks(dat(), matric, OverallAssessorFeedback)+
+      scale_fill_uoe()
   })
   
   output$p_entrustxtask <- renderPlot({
@@ -255,7 +308,8 @@ shinyServer(function(input, output, session){
             legend.position = 'bottom',
             axis.title.y=element_blank(),
             axis.text.y=element_blank(),
-            axis.ticks.y=element_blank())
+            axis.ticks.y=element_blank()) +
+      scale_fill_uoe()
     
   })
   
@@ -285,23 +339,23 @@ shinyServer(function(input, output, session){
             legend.position = 'bottom',
             axis.title.y=element_blank(),
             axis.text.y=element_blank(),
-            axis.ticks.y=element_blank())
+            axis.ticks.y=element_blank()) +
+      scale_fill_uoe()
   })
   
   # ---------- Inglis Processing ----------------
   
   inglisthisweek <- reactive({
     
-    req(input$timetable)
+
+    # what_week <- if(is.character(what_week)){as.character(what_week)}
+    # else{Sys.Date()}
+    # 
     
-    ttablefile <- input$timetable
-    
-    
-    req(input$timetable,
-        file.exists(input$timetable$datapath))
-    
-    mcex_inglis(ttablefile$datapath, sheet = "2022-2023")
-    
+    ttable() %>%
+      filter(WeekN == lubridate::week(Sys.Date()),
+             Rotation == "Inglis Veterinary Practice") %>%
+      select(c(matric,name))  
     
   })
   
@@ -323,6 +377,14 @@ shinyServer(function(input, output, session){
   })
   
     
+  output$inglis_fulltasks <- renderDT({
+    
+    dat() %>% 
+      filter(matric %in% inglisthisweek()$matric,
+             WeekN == week(Sys.Date())) %>% 
+      select(rowID, StudentName, Rotation, Assessor, Referral, MainTask, OverallAssessorFeedback) 
+  })
+  
   
   output$inglis_tasks <- renderDT({
     dat() %>% 
@@ -350,6 +412,19 @@ shinyServer(function(input, output, session){
     
   })
   
+  
+  # ---------------------- Flat Images -------------------
+  
+  
+  output$logo <- renderImage({
+    # Return a list containing the filename
+    list(src = file.path("media/RDVS_2col_cmyk.png"),
+         contentType = 'image/png',
+         width = 221,
+         height = 52,
+         alt = "R(D)SVS Logo")
+  }, deleteFile = FALSE)
+
   
     #-------------  Close Server App Brackets -----------------
  
