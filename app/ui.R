@@ -12,9 +12,7 @@ shinyUI(
              
              tabPanel(title = "How to use this app",
                       sidebarPanel(fileInput(inputId = "minicex_file",
-                                             label = "Upload your MiniCEx.xlsx file here"),
-                                   fileInput(inputId = "edits",
-                                             label = "Upload your MiniCEx Rows_To_Edit.xlsx file here")),
+                                             label = "Upload your MiniCEx.xlsx file here")),
                       mainPanel(fluidPage(imageOutput("logo", inline = TRUE),
                                           tags$h1("Welcome to the R(D)SVS MiniCEx App"),
                                           tags$p("This app is intended to process and report on the MiniCEx data
@@ -24,16 +22,10 @@ shinyUI(
                                            at will. If there are any issues with the app, please contact Jill with as full a description of
                                            the issue as possible.", tags$em("The most likely issue is that the edit file is no longer compatible"), 
                                            "and this may be fixed by reverting the last changes if possible." ),
-                                          tags$p("At present, the app requires you to upload two files:"),
+                                          tags$p("At present, the app requires you to upload one file:"),
                                           tags$ol(tags$li("A MiniCEx file",
                                                           tags$ul("This should be the MiniCEx file as you download it from the FY Teams page.
-                                                                  Do not make any edits to this file.")),
-                                                  tags$li("A MiniCEx edit file",
-                                                          tags$ul("This file should look like the MiniCEx file but have only the rows you want to 
-                                                                  edit and have the timetable in a second sheet, ie see Fieldsec/BVMS Years/
-                                                                  Final Year/MiniCEx Analyses/AY 2023-2024/App Data - Save Your MiniCEx Spreadsheet Here
-                                                                  /FY MiniCE 2023_2024_RowsToEdit.xlsx")))
-                                          ),
+                                                                  It needs to have the timetable sheet in it. "))),
                                 fluidRow(tags$h2("MiniCEx Snapshot"),
                                          tags$p("Once your MiniCEx data is uploaded it will appear here. It shoud look like your excel file, but with some extra columns at the end.
                                                 If this doesn't look right at this stage, double check that your file hasn't been changed from the version downloaded
@@ -43,7 +35,7 @@ shinyUI(
                                 fluidRow(tags$h2("Yearlist Snapshot"),
                                          DTOutput("raw_yl"))
                                 )
-                      ),
+                      )),
              
              
              tabPanel(title = "MiniCEx Report",

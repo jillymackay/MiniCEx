@@ -15,7 +15,7 @@ shinyServer(function(input, output, session){
   
   #------------ Importing Data ----------------
   
-  olddat <- reactive ({
+  dat <- reactive ({
     
     req(input$minicex_file)
     
@@ -34,39 +34,23 @@ shinyServer(function(input, output, session){
     
   })
   
-  dat <- reactive ({
-    
-    req(input$edits, olddat())
-    
-    infile <- input$edits
-    
-    
-    req(input$edits,
-        file.exists(input$edits$datapath))
-    
-    withProgress({
-      setProgress(message = "Processing data . . .")
-      
-      mcex_edit(infile$datapath, olddat())
-      
-    })
-  })
   
   ttable <- reactive ({
     
-    req(input$edits)
+    req(input$minicex_file)
     
-    ttablefile <- input$edits
+    infile <- input$minicex_file
     
     
-    req(input$edits,
-        file.exists(input$edits$datapath))
+    req(input$minicex_file,
+        file.exists(input$minicex_file$datapath))
+    
     
     withProgress({
       setProgress(message = "Processing timetable data . . .")
       
       
-      mcex_ttable(ttablefile$datapath, sheet = "Timetable - Please Do Not Edit") 
+      readxl::read_excel(infile$datapath, sheet = "Timetable") 
 
       
     })
@@ -363,16 +347,15 @@ shinyServer(function(input, output, session){
   
   inglisthisweek <- reactive({
     
-    req(input$edits)
+
+    # what_week <- if(is.character(what_week)){as.character(what_week)}
+    # else{Sys.Date()}
+    # 
     
-    ttablefile <- input$edits
-    
-    
-    req(input$edits,
-        file.exists(input$edits$datapath))
-    
-    mcex_inglis(ttablefile$datapath, sheet = "Timetable - Please Do Not Edit")
-    
+    ttable() %>%
+      filter(WeekN == lubridate::week(Sys.Date()),
+             Rotation == "Inglis Veterinary Practice") %>%
+      select(c(matric,name))  
     
   })
   
